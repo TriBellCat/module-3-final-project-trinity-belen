@@ -10,7 +10,7 @@ function Header({ searchTerm, setSearchTerm, handleSubmit }) {
     };
 
     return (
-        <header>
+        <header className='site-header'>
             <img src="logo.png" alt="logo" className="logo" />
             <h1>Bookler</h1>
             <form onSubmit={handleSubmit}>

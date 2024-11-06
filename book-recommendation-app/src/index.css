@@ -2,3 +2,39 @@
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
 }
+
+/*
+    Header
+*/
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+}
+/*
+    Book Information
+*/
+.book-info-container {
+    display: flex;
+}
+
+.book-details {
+    width: 15%;
+}
+
+div.book-details img {
+    width: 15em;
+}
+
+div.book-details p {
+    font-size: 18px;
+}
+
+.book-synopsis {
+    width: 80%; 
+}
+
+div.book-synopsis p {
+    font-size: 20px;
+}
+  
