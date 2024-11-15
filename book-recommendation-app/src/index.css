@@ -37,4 +37,11 @@ div.book-details p {
 div.book-synopsis p {
     font-size: 20px;
 }
+/*
+    Home page
+*/
+.home-page {
+    display: flex;    
+    justify-content: space-between;
+}
   

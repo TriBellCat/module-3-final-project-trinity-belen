@@ -60,11 +60,11 @@ function BookInfo ({ searchTerm }) {
           {/* Book Information */}
           <h2>{bookData.title}</h2>
           <img 
-            src={bookData.imageLinks.thumbnail} 
+            src={bookData.imageLinks ? bookData.imageLinks.thumbnail : 'assets/default-thumbnail.png'}  //Conditionally renders the thumbnail
             alt={bookData.title} 
           />
-          <p>Author: {bookData.authors.join(', ')}</p>
-          <p>Category: {bookData.categories.join(', ')}</p>
+          <p>Author: {bookData.authors && bookData.authors.join(', ')}</p>
+          <p>Category: {bookData.categories && bookData.categories.join(', ')}</p>
           <p>Publisher: {bookData.publisher}</p>
           <p>Published Date: {bookData.publishedDate}</p>
           
