@@ -1,9 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
-
 function Header({ searchTerm, setSearchTerm, handleSubmit }) {
-
     //Updates searchTerm state whenever the input field value changes
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
