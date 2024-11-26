@@ -13,14 +13,20 @@ function BookInfo({ book }) {
   //To save progress with the book title and ID as reference
   const handleProgressChange = (event) => {
     setSelectedProgress(event.target.value);
-    localStorage.setItem(book.id, JSON.stringify({ title: book.volumeInfo?.title, progress: event.target.value }));
+    localStorage.setItem(book.id, JSON.stringify({ 
+      title: book.volumeInfo?.title, 
+      progress: event.target.value 
+    }));
   }
 
   //For when the user clicks on the star
   //To save review with the book title and ID as reference
   const handleScoreClick = (score) => {
     setReviewScore(score);
-    localStorage.setItem(`${book.id}-review`, JSON.stringify({ title: book.volumeInfo?.title, review: score }));
+    localStorage.setItem(`${book.id}-review`, JSON.stringify({ 
+      title: book.volumeInfo?.title, 
+      review: score 
+    }));
   };
 
   return (
