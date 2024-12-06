@@ -3,19 +3,20 @@
 import React from 'react';
 
 function HomePage({ onBookSelect }) {
-  const [filteredBooks, setFilteredBooks] = React.useState([]); //Stores the filtered books based on progress
+  /* States */
+  const [filteredBooks, setFilteredBooks] = React.useState([]); //To store the filtered books based on progress
 
-  //Checks if the value is valid before attempting to parse 
+  //Checks if the value is valid before attempting to parse, returns raw string if parsing fails
   const safeJSONParse = (str) => {
     try {
       return JSON.parse(str);
     }
     catch {
-      return str;             //Returns raw string if parsing fails
+      return str;             
     }
   };
 
-  //Removes a book from localStorage and update the filteredBooks state
+  //Removes a book from localStorage and updates the filteredBooks state
   const handleRemoveBook = (bookId) => {
     localStorage.removeItem(bookId);
     localStorage.removeItem(`${bookId}-review`);
@@ -37,13 +38,15 @@ function HomePage({ onBookSelect }) {
           //Get the review scores, default to 0 if not available
           const reviewData = safeJSONParse(localStorage.getItem(`${key}-review`)) || { review: 0 };
 
-          //Adds book to the array with its title, progress, and review
+          //Processes and stores book information to the books array
           books.push({
             id: key,
-            title: storedData.title || key,
+            ...storedData,
+            covers: storedData.imageLinks?.thumbnail || 'assets/default-thumbnail.png',
             progress: storedData.progress,
             review: reviewData.review,
           });
+          console.log('Book covers:', books.covers);
         }
       }
 
@@ -54,15 +57,22 @@ function HomePage({ onBookSelect }) {
   }, []);
 
   return (
+    //Renders books that are in progress or finished
     <div className="home-page">
       {filteredBooks.map((book) => (
         <div key={book.id}>
-          <h3>{book.title}</h3>
+          <h2>{book.title}</h2>
+          <h3>Author: {book.authors}</h3>
+          <p>Publisher: {book.publisher|| 'Unknown'}</p>
+          <img
+            src={book.covers || 'assets/default-thumbnail.png'}
+            alt={book.title}
+          />
           <p>Progress: {book.progress}</p>
           <p>Review: {book.review} stars</p>
-          
+
           <button onClick={() => handleRemoveBook(book.id)}>Remove</button>
-          {/*<button onClick={() => onBookSelect(book)}>View Details</button>  */}
+          <button onClick={() => onBookSelect(book)}>View Details</button>
         </div>
       ))}
     </div>

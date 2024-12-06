@@ -3,29 +3,38 @@
 import React from 'react';
 
 function BookInfo({ book }) {
-  //Stores user progress and review score
-  const [selectedProgress, setSelectedProgress] = React.useState(book.progress || 'Not Started');
-  const [reviewScore, setReviewScore] = React.useState(book.review || 0); 
 
   const reviewStars = [1, 2, 3, 4, 5];
 
-  //For dropdown changes
-  //To save progress with the book title and ID as reference
+  /* States */ 
+  const [selectedProgress, setSelectedProgress] = React.useState(book.progress || 'Not Started'); //To stores user's progress
+  const [reviewScore, setReviewScore] = React.useState(book.review || 0);                         //To stores user's review score
+
+  //Handles changes in the dropdown menu for progress
   const handleProgressChange = (event) => {
-    setSelectedProgress(event.target.value);
-    localStorage.setItem(book.id, JSON.stringify({ 
-      title: book.volumeInfo?.title, 
-      progress: event.target.value 
+    setSelectedProgress(event.target.value); //Sets progress with the one that the user selected
+
+    //Saves book info to local storage when progress changes 
+    localStorage.setItem(book.id, JSON.stringify({
+      //Checks for book's info/properties from API first
+      //Falls back to the one from local storage (for the HomePage View Details button) if that's not possible
+      title: book.volumeInfo?.title || book.title,
+      authors: book.volumeInfo?.authors || book.authors,
+      categories: book.volumeInfo?.categories || book.categories,
+      publisher: book.volumeInfo?.publisher || book.publisher,
+      publishedDate: book.volumeInfo?.publishedDate || book.publishedDate,
+      description: book.volumeInfo?.description || book.description,
+      imageLinks: book.volumeInfo?.imageLinks.thumbnail || book.imageLinks,
+
+      progress: event.target.value
     }));
   }
 
-  //For when the user clicks on the star
-  //To save review with the book title and ID as reference
+  //Handles the changes in user review score click
   const handleScoreClick = (score) => {
     setReviewScore(score);
-    localStorage.setItem(`${book.id}-review`, JSON.stringify({ 
-      title: book.volumeInfo?.title, 
-      review: score 
+    localStorage.setItem(`${book.id}-review`, JSON.stringify({
+      review: score
     }));
   };
 
@@ -35,13 +44,17 @@ function BookInfo({ book }) {
         {/* Book Information */}
         <h2>{book.volumeInfo?.title || book.title}</h2>
         <img
-          src={book.volumeInfo?.imageLinks?.thumbnail || 'assets/default-thumbnail.png'}
-          alt={book.volumeInfo?.title || book.title}
+          src={
+            book.volumeInfo?.imageLinks?.thumbnail ||
+            book.imageLinks?.thumbnail ||
+            'assets/default-thumbnail.png'
+          }
+          alt={book.volumeInfo?.title || book.title || 'Book cover'}
         />
-        <p>Author: {book.volumeInfo?.authors?.join(', ') || 'Unknown'}</p>
-        <p>Category: {book.volumeInfo?.categories?.join(', ') || 'Uncategorized'}</p>
-        <p>Publisher: {book.volumeInfo?.publisher || 'Unknown'}</p>
-        <p>Published Date: {book.volumeInfo?.publishedDate || 'Unknown'}</p>
+        <p>Author: {book.volumeInfo?.authors?.join(', ') || book.authors || 'Unknown'}</p>
+        <p>Category: {book.volumeInfo?.categories?.join(', ') || book.categories || 'Uncategorized'}</p>
+        <p>Publisher: {book.volumeInfo?.publisher || book.publisher || 'Unknown'}</p>
+        <p>Published Date: {book.volumeInfo?.publishedDate || book.publishedDate || 'Unknown'}</p>
 
         {/* Display stars for review */}
         {
@@ -75,7 +88,7 @@ function BookInfo({ book }) {
       {/* For the right side of the page */}
       <div className="book-synopsis">
         <h2>Synopsis</h2>
-        <p>{book.volumeInfo?.description || 'No description available.'}</p>
+        <p>{book.volumeInfo?.description || book.description || 'No description available.'}</p>
       </div>
     </div>
   );
