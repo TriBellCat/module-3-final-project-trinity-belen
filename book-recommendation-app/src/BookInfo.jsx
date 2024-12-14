@@ -2,22 +2,42 @@
 
 import React from 'react';
 
-function BookInfo({ book }) {
+function BookInfo({ book, changeList }) {
 
   const reviewStars = [1, 2, 3, 4, 5];
 
-  /* States */ 
+  /* States */
   const [selectedProgress, setSelectedProgress] = React.useState(book.progress || 'Not Started'); //To stores user's progress
   const [reviewScore, setReviewScore] = React.useState(book.review || 0);                         //To stores user's review score
+  const [selectedList, setSelectedList] = React.useState("");
 
-  //Handles changes in the dropdown menu for progress
-  const handleProgressChange = (event) => {
+  //Adds a book when user presses the button
+  const addToListButton = () => {
+    if (!selectedList) {
+      alert("Please select a reading list.");
+      return;
+    }
+
+    changeList?.(selectedList, book, 'add');
+  };
+
+  //Removes book from list when user presses the button button
+  const removeFromListButton = () => {
+    if (!selectedList) {
+      alert("Please select a reading list.");
+      return;
+    }
+
+    changeList?.(selectedList, book, 'remove');
+  };
+
+  //Saves changes in the dropdown menu for progress
+  const saveUserProgress = (event) => {
     setSelectedProgress(event.target.value); //Sets progress with the one that the user selected
-
-    //Saves book info to local storage when progress changes 
     localStorage.setItem(book.id, JSON.stringify({
-      //Checks for book's info/properties from API first
-      //Falls back to the one from local storage (for the HomePage View Details button) if that's not possible
+      //Information saved for when the home page checks for book's info/properties from API first
+      //Which will fall back to the one from local storage (for the HomePage View Details button) if that's not possible
+      /*
       title: book.volumeInfo?.title || book.title,
       authors: book.volumeInfo?.authors || book.authors,
       categories: book.volumeInfo?.categories || book.categories,
@@ -25,13 +45,13 @@ function BookInfo({ book }) {
       publishedDate: book.volumeInfo?.publishedDate || book.publishedDate,
       description: book.volumeInfo?.description || book.description,
       imageLinks: book.volumeInfo?.imageLinks.thumbnail || book.imageLinks,
-
+      */
       progress: event.target.value
     }));
   }
 
-  //Handles the changes in user review score click
-  const handleScoreClick = (score) => {
+  //Sets and saves the changes in user review score when the user clicks on the stars
+  const saveUserScoreClick = (score) => {
     setReviewScore(score);
     localStorage.setItem(`${book.id}-review`, JSON.stringify({
       review: score
@@ -62,7 +82,7 @@ function BookInfo({ book }) {
             (star) => (
               <span
                 key={star}
-                onClick={() => handleScoreClick(star)}
+                onClick={() => saveUserScoreClick(star)}
                 style={{ cursor: 'pointer', color: star <= reviewScore ? 'gold' : 'gray' }}
               >
                 ★
@@ -75,7 +95,7 @@ function BookInfo({ book }) {
         {/* Dropdown menu for user progress */}
         <select
           value={selectedProgress}
-          onChange={handleProgressChange}
+          onChange={saveUserProgress}
         >
           {['Not Started', 'In Progress', 'Finished'].map((option) => (
             <option key={option} value={option}>
@@ -83,6 +103,22 @@ function BookInfo({ book }) {
             </option>
           ))}
         </select>
+
+        {/* Add and Remove from Reading List UI */}
+        <select onChange={(e) => setSelectedList(e.target.value)} value={selectedList}>
+          <option value="" disabled>
+            Select Reading List
+          </option>
+          {Object.keys(localStorage.getItem("readingLists") ? JSON.parse(localStorage.getItem("readingLists")) : {}).map(
+            (listName, index) => (
+              <option key={index} value={listName}>
+                {listName}
+              </option>
+            )
+          )}
+        </select>
+        <button onClick={addToListButton}>Add to Reading List</button>
+        <button onClick={removeFromListButton}>Remove from Reading List</button>
       </div>
 
       {/* For the right side of the page */}
@@ -93,5 +129,4 @@ function BookInfo({ book }) {
     </div>
   );
 };
-
 export default BookInfo;

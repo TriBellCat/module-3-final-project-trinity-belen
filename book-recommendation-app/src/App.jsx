@@ -4,16 +4,18 @@ import Header from './Header.jsx'
 import BookInfo from './BookInfo.jsx'
 import HomePage from './HomePage.jsx';
 import SearchResults from './SearchResults.jsx';
+import ReadingList from './ReadingList.jsx';
 
 function App() {
-  /* States */ 
+  /* States */
   const [searchTerm, setSearchTerm] = React.useState('');                   //To store the current search term entered by the user
   const [submittedSearchTerm, setSubmittedSearchTerm] = React.useState(''); //To store the submitted search term to trigger book information retrieval
   const [selectedBook, setSelectedBook] = React.useState(null);             //To store the currently selected book
   const [searchResults, setSearchResults] = React.useState([]);             //To store search results from the API
+  const [addBookToList, setAddBookToList] = React.useState(null);           //To store books to reading lists later on
 
-  //Handles the user's search submission and fetch data from Google Books API
-  const handleSubmit = async (e) => {
+  //Fetches data from Google Books API and then get results based off of user input
+  const fetchUserSubmission = async (e) => {
     e.preventDefault();                 //Prevents default form submission behavior
     setSubmittedSearchTerm(searchTerm); //Updates the submitted search term with the current one
 
@@ -32,8 +34,8 @@ function App() {
     }
   }
 
-  //Handles book selection from the HomePage
-  const handleBookSelect = (book) => {
+  //Handles book selection from the HomePage by updating and saving details
+  const updateBookSelect = (book) => {
     const bookProgress = JSON.parse(localStorage.getItem(book.id))?.progress || 'Not Started';
     const bookReview = JSON.parse(localStorage.getItem(`${book.id}-review`))?.review || 0;
 
@@ -42,7 +44,7 @@ function App() {
       id: book.id,
       ...book.volumeInfo,                                               //Spreads volumeInfo for books from SearchResults
       ...JSON.parse(localStorage.getItem(book.id)),                     //Merges stored data for localStorage books
-      
+
       progress: bookProgress,
       review: bookReview,
     };
@@ -50,25 +52,35 @@ function App() {
     setSelectedBook(fullBookDetails);
   };
 
+  const memoizedAddBook = React.useCallback((callback) => {
+    setAddBookToList(() => callback);
+  }, []);
+
   return (
     <div>
       <Header
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
-        handleSubmit={handleSubmit}
+        fetchUserSubmission={fetchUserSubmission}
+      />
+      <ReadingList 
+        addBook={memoizedAddBook} 
       />
 
       {/* Conditional rendering based on whether a book is selected or a search has been submitted */}
       {selectedBook ?
-        (<BookInfo book={selectedBook} />) :
+        (<BookInfo
+          book={selectedBook}
+          changeList={addBookToList} 
+        />) :
         (submittedSearchTerm ?
           (
             <SearchResults
               results={searchResults}
-              onBookSelect={handleBookSelect}
+              onBookSelect={updateBookSelect}
             />
           ) :
-          (<HomePage onBookSelect={handleBookSelect} />)
+          (<HomePage onBookSelect={updateBookSelect} />)
         )
       }
     </div>

@@ -1,23 +1,28 @@
 /* eslint-disable react/prop-types */
 
-function Header({ searchTerm, setSearchTerm, handleSubmit }) {
+function Header({ searchTerm, setSearchTerm, fetchUserSubmission }) {
     //Updates searchTerm state whenever the input field value changes
-    const handleSearchChange = (e) => {
+    const updateSearch = (e) => {
         setSearchTerm(e.target.value);
     };
 
     return (
         <header className='site-header'>
-            <img src="logo.png" alt="logo" className="logo" />
-            <h1>Bookler</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={searchTerm}              //The value is bound to searchTerm sstate
-                    onChange={handleSearchChange}   //Calls handleSearchChange on input change
-                    placeholder="Search for a book..."
-                />
-                <button type="submit">Search</button>
+             <div className="header-left">
+                <span className="bi--book-half"></span>
+                <h1>Bookosphere</h1>
+             </div>
+            <form 
+                onSubmit={fetchUserSubmission}
+                className='search-bar'
+            >
+            <input
+                type="text"
+                value={searchTerm}              //The value is bound to searchTerm sstate
+                onChange={updateSearch}   //Calls updateSearch on input change
+                placeholder="Search for a book..."
+            />
+            <button type="submit"> Search </button>
             </form>
         </header>
     );

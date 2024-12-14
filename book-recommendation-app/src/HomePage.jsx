@@ -16,8 +16,8 @@ function HomePage({ onBookSelect }) {
     }
   };
 
-  //Removes a book from localStorage and updates the filteredBooks state
-  const handleRemoveBook = (bookId) => {
+  //Removes a book from localStorage and then updating the filteredBooks state
+  const removeBookFromData = (bookId) => {
     localStorage.removeItem(bookId);
     localStorage.removeItem(`${bookId}-review`);
 
@@ -43,7 +43,7 @@ function HomePage({ onBookSelect }) {
             id: key,
             ...storedData,
             covers: storedData.imageLinks?.thumbnail || 'assets/default-thumbnail.png',
-            progress: storedData.progress,
+            progress: storedData.progress,  
             review: reviewData.review,
           });
           console.log('Book covers:', books.covers);
@@ -71,7 +71,7 @@ function HomePage({ onBookSelect }) {
           <p>Progress: {book.progress}</p>
           <p>Review: {book.review} stars</p>
 
-          <button onClick={() => handleRemoveBook(book.id)}>Remove</button>
+          <button onClick={() => removeBookFromData(book.id)}>Remove</button>
           <button onClick={() => onBookSelect(book)}>View Details</button>
         </div>
       ))}

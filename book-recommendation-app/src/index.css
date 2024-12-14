@@ -1,16 +1,74 @@
 :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    color: black;
+    background-color: #eaeff3;
+}
+
+body {
+    margin: 0;
+    padding: 0;
 }
 
 /*
     Header
 */
 
+.bi--book-half {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23000' d='M8.5 2.687c.654-.689 1.782-.886 3.112-.752c1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81c-1.094-.111-2.278-.039-3.213.492zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02c1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877c1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783'/%3E%3C/svg%3E");
+    background-color: currentColor;
+    -webkit-mask-image: var(--svg);
+    mask-image: var(--svg);
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    
+    /*My Edits*/
+    margin-right: 10px;
+    background-color: #c59650; 
+}
+
 .site-header {
     display: flex;
     justify-content: space-between;
+    background-color: #14518e;
+    color: white;
+    padding: 10px; 
 }
+
+.header-left { 
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    display: flex; 
+    align-items: center;
+}
+
+.search-bar input[type="text"] { 
+    padding: 10px; 
+    border: 2px solid #bbc8d8; 
+    border-radius: 5px 0 0 5px; 
+    outline: none; 
+    font-size: 16px; 
+}
+
+.search-bar button { 
+    padding: 10px; 
+    border: 2px solid #bbc8d8; 
+    border-radius: 0 5px 5px 0; 
+    background-color: #c59650; 
+    color: white; 
+    font-size: 16px; 
+    cursor: pointer; 
+    outline: none; 
+}
+
 /*
     Book Information
 */
@@ -35,7 +93,7 @@ div.book-details p {
 }
 
 div.book-synopsis p {
-    font-size: 20px;
+    font-size: 22px;
 }
 /*
     Home page
@@ -45,3 +103,15 @@ div.book-synopsis p {
     justify-content: space-between;
 }
   
+.home-page button {
+    font-size: 20px;
+    border-radius: 12px;
+    border: none; 
+    background-color: #c59650; 
+    color: white;
+    margin-right: 10px;
+}
+
+/*
+    Reading Lists
+*/
