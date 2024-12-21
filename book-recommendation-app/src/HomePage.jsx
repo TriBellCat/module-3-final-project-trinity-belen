@@ -2,77 +2,56 @@
 
 import React from 'react';
 
-function HomePage({ onBookSelect }) {
+function HomePage({ onBookSelect, selectedReadingList, changeList }) {
   /* States */
-  const [filteredBooks, setFilteredBooks] = React.useState([]); //To store the filtered books based on progress
+  const [booksInList, setBooksInList] = React.useState([]);
 
-  //Checks if the value is valid before attempting to parse, returns raw string if parsing fails
-  const safeJSONParse = (str) => {
-    try {
-      return JSON.parse(str);
-    }
-    catch {
-      return str;             
-    }
-  };
-
-  //Removes a book from localStorage and then updating the filteredBooks state
-  const removeBookFromData = (bookId) => {
-    localStorage.removeItem(bookId);
-    localStorage.removeItem(`${bookId}-review`);
-
-    setFilteredBooks(prevBooks => prevBooks.filter(book => book.id !== bookId));
-  };
-
+  //Load books from the selected reading list from the local storage
   React.useEffect(() => {
-    const fetchBooksByProgress = () => {
-      const books = [];
+    const readingLists = JSON.parse(localStorage.getItem('readingLists')) || {};
+    const books = readingLists[selectedReadingList] || [];
 
-      //Loops through the local storage for user review and progress
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);                                //Gets the key from localStorage
-        const storedData = safeJSONParse(localStorage.getItem(key));    //Parses the stored data
+    //Goes over each book to retrieve and add in the stored additional information
+    const bookInformation = books.map((book) => {
+      const savedData = JSON.parse(localStorage.getItem(book.id)) || {};
+      return {
+        ...book,
+        progress: savedData.progress || 'Not Started',
+        review: savedData.review || 0,
+      };
+    });
 
-        //Checks if the book is either 'In Progress' or 'Finished'
-        if (storedData?.progress === 'In Progress' || storedData?.progress === 'Finished') {
-          //Get the review scores, default to 0 if not available
-          const reviewData = safeJSONParse(localStorage.getItem(`${key}-review`)) || { review: 0 };
+    setBooksInList(bookInformation);
+  }, [selectedReadingList]);
 
-          //Processes and stores book information to the books array
-          books.push({
-            id: key,
-            ...storedData,
-            covers: storedData.imageLinks?.thumbnail || 'assets/default-thumbnail.png',
-            progress: storedData.progress,  
-            review: reviewData.review,
-          });
-          console.log('Book covers:', books.covers);
-        }
-      }
-
-      setFilteredBooks(books);  //Updates state with the filtered books
-    };
-
-    fetchBooksByProgress();
-  }, []);
+  const removeFromListButton = (book) => {
+    changeList?.(selectedReadingList, book, 'remove');
+  };
 
   return (
-    //Renders books that are in progress or finished
-    <div className="home-page">
-      {filteredBooks.map((book) => (
+    //Renders books in selected reading lsit
+    <div className="home-page-books">
+      {booksInList.map((book) => (
         <div key={book.id}>
-          <h2>{book.title}</h2>
-          <h3>Author: {book.authors}</h3>
-          <p>Publisher: {book.publisher|| 'Unknown'}</p>
+          <h2>{book.volumeInfo?.title}</h2>
+          <h3>Author: {book.volumeInfo?.authors}</h3>
+          <p>Publisher: {book.volumeInfo?.publisher || 'Unknown'}</p>
           <img
-            src={book.covers || 'assets/default-thumbnail.png'}
-            alt={book.title}
+            src={book.volumeInfo?.imageLinks?.thumbnail}
+            alt={book.volumeInfo?.title}
           />
           <p>Progress: {book.progress}</p>
           <p>Review: {book.review} stars</p>
 
-          <button onClick={() => removeBookFromData(book.id)}>Remove</button>
-          <button onClick={() => onBookSelect(book)}>View Details</button>
+          <div className="book-details-buttons">
+            <button onClick={() => onBookSelect(book)}>View Details</button>
+            <button onClick={() => removeFromListButton(book)}>Remove</button>
+            {book.saleInfo?.buyLink && (
+              <a href={book.saleInfo.buyLink} target="_blank" rel="noopener noreferrer">
+                <button className="buy-button">Buy Book</button>
+              </a>
+            )}
+          </div>
         </div>
       ))}
     </div>

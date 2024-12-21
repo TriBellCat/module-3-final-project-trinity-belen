@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-function ReadingList({ addBook }) {
+function ReadingList({ addBook, setSelectedReadingList }) {
     /* States */
     const [readingLists, setReadingLists] = React.useState(() => {
         //Loads reading lists from local storage on initial render
@@ -18,16 +18,18 @@ function ReadingList({ addBook }) {
 
     //Changes value to the currently selected reading list from the dropdown menu
     const selectCurrentList = (event) => {
-        setSelectedList(event.target.value);
+        const listName = event.target.value;
+        setSelectedList(listName);
+        setSelectedReadingList(listName);
 
         //Debug Logs
-        console.log("Currently Selected:", event.target.value);
-        console.log("Reading Lists Info:", readingLists);    //Checks books in all reading lists
+        console.log("Currently Selected:", listName);       //Checks if currently selected list is in fact currently selected
+        console.log("Reading Lists Info:", readingLists);   //Checks books in all reading lists
     };
 
-    //Creates reading list out of user prompt answer if possible
     const createReadingList = () => {
         const listName = window.prompt('Enter the name of the new reading list:');
+
         if (listName && !readingLists[listName]) {
             setReadingLists(prev => ({ ...prev, [listName]: [] }))
         }
@@ -36,7 +38,6 @@ function ReadingList({ addBook }) {
         }
     };
 
-    //Deletes a reading list
     const deleteReadingList = () => {
         if (Object.keys(readingLists).length === 0) {
             alert("No reading lists to delete!");
@@ -50,6 +51,7 @@ function ReadingList({ addBook }) {
         setReadingLists((prev) => {
             const newList = { ...prev };
             delete newList[selectedList];
+
             return newList;
         });
 
@@ -65,7 +67,7 @@ function ReadingList({ addBook }) {
             //Adds a book to a specified reading list
             if (action === 'add') {
                 if (isInList) {
-                    alert(`${book.title} is already in the "${listName}" list.`);
+                    alert(`${book.volumeInfo.title} is already in the "${listName}" list.`);
                     return prev;
                 }
                 else {
@@ -77,17 +79,24 @@ function ReadingList({ addBook }) {
             //Removes book from a specified reading list
             else if (action === 'remove') {
                 if (!isInList) {
-                    alert(`${book.title} is not in the "${listName}" list.`);
+                    alert(`${book.volumeInfo.title} is not in the "${listName}" list!`);
                     return prev;
                 }
                 else {
-                    alert(`Book removed from "${listName}"!`);
+                    alert(`${book.volumeInfo.title} removed from "${listName}"! (Refresh the home page to see it removed.)`);
                     newList[listName] = newList[listName].filter((existingBook) => existingBook.id !== book.id);
                 }
             }
 
             return newList;
         });
+    };
+
+    const clearLocalStorageButton = () => {
+        if (confirm("WARNING: This will delete all your data!")) {
+            localStorage.clear();
+            alert("Local storage is now empty!");
+        } 
     };
 
     React.useEffect(() => {
@@ -112,8 +121,9 @@ function ReadingList({ addBook }) {
                     )
                 }
             </select>
-            <button onClick={createReadingList}>Create New Reading List</button>
-            <button onClick={deleteReadingList}>Delete Reading List</button>
+            <button onClick={createReadingList}>+ Create</button>
+            <button onClick={deleteReadingList}>- Delete</button>
+            <button onClick={clearLocalStorageButton}>Reset Local Storage</button>
         </div>
     );
 

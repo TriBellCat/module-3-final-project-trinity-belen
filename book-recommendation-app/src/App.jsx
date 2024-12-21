@@ -8,11 +8,17 @@ import ReadingList from './ReadingList.jsx';
 
 function App() {
   /* States */
-  const [searchTerm, setSearchTerm] = React.useState('');                   //To store the current search term entered by the user
-  const [submittedSearchTerm, setSubmittedSearchTerm] = React.useState(''); //To store the submitted search term to trigger book information retrieval
-  const [selectedBook, setSelectedBook] = React.useState(null);             //To store the currently selected book
-  const [searchResults, setSearchResults] = React.useState([]);             //To store search results from the API
-  const [addBookToList, setAddBookToList] = React.useState(null);           //To store books to reading lists later on
+  //For the book information functionality
+  const [selectedBook, setSelectedBook] = React.useState(null);             
+
+  //For the search functionality
+  const [searchTerm, setSearchTerm] = React.useState('');                  
+  const [submittedSearchTerm, setSubmittedSearchTerm] = React.useState(''); 
+  const [searchResults, setSearchResults] = React.useState([]);
+  
+  //For reading lists
+  const [addBookToList, setAddBookToList] = React.useState(null);           
+  const [selectedReadingList, setSelectedReadingList] = React.useState(''); 
 
   //Fetches data from Google Books API and then get results based off of user input
   const fetchUserSubmission = async (e) => {
@@ -21,7 +27,7 @@ function App() {
 
     //Constructs the API URL using the search term and API key and then fetch search results from the API
     const MY_KEY = import.meta.env.VITE_Api_Key;
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=${MY_KEY}`;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${searchTerm}&key=${MY_KEY}&maxResults=40`;
 
     //The 'try...catch' block for error handling during API call
     try {
@@ -34,27 +40,14 @@ function App() {
     }
   }
 
-  //Handles book selection from the HomePage by updating and saving details
   const updateBookSelect = (book) => {
-    const bookProgress = JSON.parse(localStorage.getItem(book.id))?.progress || 'Not Started';
-    const bookReview = JSON.parse(localStorage.getItem(`${book.id}-review`))?.review || 0;
-
-    //Ensures that all fields are present
-    const fullBookDetails = {
-      id: book.id,
-      ...book.volumeInfo,                                               //Spreads volumeInfo for books from SearchResults
-      ...JSON.parse(localStorage.getItem(book.id)),                     //Merges stored data for localStorage books
-
-      progress: bookProgress,
-      review: bookReview,
-    };
-
-    setSelectedBook(fullBookDetails);
+    setSelectedBook(book);
   };
 
   const memoizedAddBook = React.useCallback((callback) => {
     setAddBookToList(() => callback);
   }, []);
+
 
   return (
     <div>
@@ -63,24 +56,34 @@ function App() {
         setSearchTerm={setSearchTerm}
         fetchUserSubmission={fetchUserSubmission}
       />
-      <ReadingList 
-        addBook={memoizedAddBook} 
+      <ReadingList
+        addBook={memoizedAddBook}
+        setSelectedReadingList={setSelectedReadingList}
       />
 
       {/* Conditional rendering based on whether a book is selected or a search has been submitted */}
       {selectedBook ?
-        (<BookInfo
-          book={selectedBook}
-          changeList={addBookToList} 
-        />) :
-        (submittedSearchTerm ?
+        (
+          <BookInfo
+            book={selectedBook}
+            changeList={addBookToList}
+          />
+        ) :
+        (
+          submittedSearchTerm ?
           (
             <SearchResults
               results={searchResults}
               onBookSelect={updateBookSelect}
             />
           ) :
-          (<HomePage onBookSelect={updateBookSelect} />)
+          (
+            <HomePage
+              onBookSelect={updateBookSelect}
+              selectedReadingList={selectedReadingList}
+              changeList={addBookToList}
+            />
+          )
         )
       }
     </div>

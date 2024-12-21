@@ -1,3 +1,7 @@
+/*
+    Universal
+*/
+
 :root {
     font-family: "Roboto", sans-serif;
     font-weight: 300;
@@ -5,9 +9,38 @@
     background-color: #eaeff3;
 }
 
+html,
 body {
     margin: 0;
     padding: 0;
+}
+
+/* 
+    Multiple Elements
+*/
+
+.book-details-buttons button {
+    background-color: #14518e;
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 14px;
+    height: 36px;
+    line-height: 27px;
+    min-width: 54px;
+    padding: 0 16px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: pre;
+
+    margin-right: 5px;
+}
+
+.buy-button {
+    background-color: #fe5562 ! important;
 }
 
 /*
@@ -26,10 +59,10 @@ body {
     mask-repeat: no-repeat;
     -webkit-mask-size: 100% 100%;
     mask-size: 100% 100%;
-    
+
     /*My Edits*/
     margin-right: 10px;
-    background-color: #c59650; 
+    background-color: #c59650;
 }
 
 .site-header {
@@ -37,36 +70,36 @@ body {
     justify-content: space-between;
     background-color: #14518e;
     color: white;
-    padding: 10px; 
+    padding: 10px;
 }
 
-.header-left { 
+.header-left {
     display: flex;
     align-items: center;
 }
 
 .search-bar {
-    display: flex; 
+    display: flex;
     align-items: center;
 }
 
-.search-bar input[type="text"] { 
-    padding: 10px; 
-    border: 2px solid #bbc8d8; 
-    border-radius: 5px 0 0 5px; 
-    outline: none; 
-    font-size: 16px; 
+.search-bar input[type="text"] {
+    padding: 10px;
+    border: 2px solid #bbc8d8;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+    font-size: 16px;
 }
 
-.search-bar button { 
-    padding: 10px; 
-    border: 2px solid #bbc8d8; 
-    border-radius: 0 5px 5px 0; 
-    background-color: #c59650; 
-    color: white; 
-    font-size: 16px; 
-    cursor: pointer; 
-    outline: none; 
+.search-bar button {
+    padding: 10px;
+    border: 2px solid #bbc8d8;
+    border-radius: 0 5px 5px 0;
+    background-color: #c59650;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
 }
 
 /*
@@ -89,29 +122,97 @@ div.book-details p {
 }
 
 .book-synopsis {
-    width: 80%; 
+    width: 80%;
 }
 
 div.book-synopsis p {
     font-size: 22px;
 }
+
 /*
     Home page
 */
-.home-page {
-    display: flex;    
-    justify-content: space-between;
-}
-  
-.home-page button {
-    font-size: 20px;
-    border-radius: 12px;
-    border: none; 
-    background-color: #c59650; 
-    color: white;
-    margin-right: 10px;
+.home-page-books {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
 }
 
 /*
     Reading Lists
 */
+.reading-list {
+    position: relative;
+    margin-top: 5px;
+}
+
+.reading-list button {
+    appearance: none;
+    background-color: #e8eff5;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
+    box-sizing: border-box;
+    color: #3e9bc3;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    margin-left: 5px;
+}
+
+.reading-list select {
+    padding: 6px 16px;
+    background: #77b0d0;
+    color: #FFFFFF;
+    border: 1px solid rgba(27, 31, 35, .15);
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+/* 
+    Search Results 
+*/
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-result-item-left img {
+    margin-right: 15px;
+    width: 100px;
+    height: auto;
+}
+
+.search-result-item-right {
+    position: relative
+}

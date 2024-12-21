@@ -8,21 +8,22 @@ function Header({ searchTerm, setSearchTerm, fetchUserSubmission }) {
 
     return (
         <header className='site-header'>
-             <div className="header-left">
+            <div className="header-left">
                 <span className="bi--book-half"></span>
                 <h1>Bookosphere</h1>
-             </div>
-            <form 
+            </div>
+
+            <form
                 onSubmit={fetchUserSubmission}
                 className='search-bar'
             >
-            <input
-                type="text"
-                value={searchTerm}              //The value is bound to searchTerm sstate
-                onChange={updateSearch}   //Calls updateSearch on input change
-                placeholder="Search for a book..."
-            />
-            <button type="submit"> Search </button>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={updateSearch}
+                    placeholder="Search for a book..."
+                />
+                <button type="submit"> Search </button>
             </form>
         </header>
     );
