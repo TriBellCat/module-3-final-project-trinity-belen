@@ -1,30 +1,36 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function BookInfo({ book, changeList }) {
+function BookInfo({ book, changeList, onAuthorClick }) {
+  const reviewStars = [1, 2, 3, 4, 5];
+  const navigate = useNavigate();
+
   /* States */
   const [selectedProgress, setSelectedProgress] = React.useState(book.progress || 'Not Started');
   const [reviewScore, setReviewScore] = React.useState(book.review || 0);
-  const [selectedList, setSelectedList] = React.useState("");
+  const [selectedLists, setSelectedLists] = React.useState(() => {
+    const readingLists = JSON.parse(localStorage.getItem('readingLists')) || {};
+    return Object.keys(readingLists).filter(listName =>
+      readingLists[listName].some(existingBook => existingBook.id === book.id)
+    );
+  });
 
-  const reviewStars = [1, 2, 3, 4, 5];
-
-  /* Functions for Reading Lists Buttons */
-  const addToListButton = () => {
-    if (!selectedList) {
-      alert("Please select a reading list.");
-      return;
+  //A check to handle when book is null
+  React.useEffect(() => {
+    if (!book) {
+      navigate('/');
     }
-    changeList?.(selectedList, book, 'add');
-  };
+  }, [book, navigate]);
 
-  const removeFromListButton = () => {
-    if (!selectedList) {
-      alert("Please select a reading list.");
-      return;
-    }
-    changeList?.(selectedList, book, 'remove');
+  //Toggles state of book in list between being removed and added
+  const toggleList = (listName) => {
+    const isHighlighted = selectedLists.includes(listName);
+    changeList?.(listName, book, isHighlighted ? 'remove' : 'add');
+    setSelectedLists(prev =>
+      isHighlighted ? prev.filter(name => name !== listName) : [...prev, listName]
+    );
   };
 
   /* Functions for Saving User Input */
@@ -62,7 +68,22 @@ function BookInfo({ book, changeList }) {
           src={book.volumeInfo?.imageLinks?.thumbnail}
           alt={book.volumeInfo?.title || 'Book cover'}
         />
-        <p>Author: {book.volumeInfo?.authors?.join(', ') || 'Unknown'}</p>
+        <p>
+          Author:<br>
+
+          </br>
+          {book.volumeInfo?.authors?.map((author, index) => (
+            <span
+              key={index}
+              onClick={() => onAuthorClick(author)}
+              className="book-info-author"
+            >
+              <mark>
+                {author}
+              </mark>
+            </span>
+          )) || 'Unknown'}
+        </p>
         <p>Category: {book.volumeInfo?.categories?.join(', ') || 'Uncategorized'}</p>
         <p>Publisher: {book.volumeInfo?.publisher || 'Unknown'}</p>
         <p>Published Date: {book.volumeInfo?.publishedDate || 'Unknown'}</p>
@@ -102,22 +123,26 @@ function BookInfo({ book, changeList }) {
 
         <div>
           {/* Add and Remove from Reading List Dropdown Menu */}
-          <select onChange={(e) => setSelectedList(e.target.value)} value={selectedList}>
+          <select
+            onChange={(e) => toggleList(e.target.value)}
+            value=""
+          >
             <option value="" disabled>
               Select Reading List
             </option>
             {Object.keys(localStorage.getItem("readingLists") ? JSON.parse(localStorage.getItem("readingLists")) : {}).map(
               (listName, index) => (
-                <option key={index} value={listName}>
+                <option
+                  key={index}
+                  value={listName}
+                  className={selectedLists.includes(listName) ? 'highlighted-lists' : 'non-highlighted-lists'}          
+                >
                   {listName}
                 </option>
               )
             )}
           </select>
           <div className="book-details-buttons">
-            <button onClick={addToListButton}>Add</button>
-            <button onClick={removeFromListButton}>Remove</button>
-
             {/* Only renders the buy button if it's available*/}
             {book.saleInfo?.buyLink && (
               <a href={book.saleInfo.buyLink} target="_blank" rel="noopener noreferrer">

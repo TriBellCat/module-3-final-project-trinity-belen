@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage({ onBookSelect, selectedReadingList, changeList }) {
+  const navigate = useNavigate();
+
   /* States */
   const [booksInList, setBooksInList] = React.useState([]);
 
@@ -44,7 +47,13 @@ function HomePage({ onBookSelect, selectedReadingList, changeList }) {
           <p>Review: {book.review} stars</p>
 
           <div className="book-details-buttons">
-            <button onClick={() => onBookSelect(book)}>View Details</button>
+            <button onClick={() => {
+                onBookSelect(book);
+                navigate('/book');
+              }
+            }>
+              View Details
+            </button>
             <button onClick={() => removeFromListButton(book)}>Remove</button>
             {book.saleInfo?.buyLink && (
               <a href={book.saleInfo.buyLink} target="_blank" rel="noopener noreferrer">

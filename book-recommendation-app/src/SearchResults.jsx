@@ -1,6 +1,9 @@
 /* eslint-disable react/prop-types */
+import { useNavigate } from 'react-router-dom';
 
 function SearchResults({ results, onBookSelect }) {
+    const navigate = useNavigate();
+
     //Renders search results based on what the user searched up
     return (
         <div className="search-results">
@@ -21,7 +24,13 @@ function SearchResults({ results, onBookSelect }) {
                             <p>{result.searchInfo?.textSnippet}</p>
                         </div>
                         <div className="book-details-buttons">
-                            <button onClick={() => onBookSelect(result)}>View Details</button>
+                            <button onClick={() =>{
+                                    onBookSelect(result);
+                                    navigate('/book');
+                                }
+                            }>
+                                View Details
+                            </button>
                             <button>Add to Reading List</button>
                             {result.saleInfo?.buyLink && (
                                 <a href={result.saleInfo.buyLink} target="_blank" rel="noopener noreferrer">

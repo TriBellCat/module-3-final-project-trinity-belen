@@ -76,6 +76,7 @@ body {
 .header-left {
     display: flex;
     align-items: center;
+    user-select: none;
 }
 
 .search-bar {
@@ -100,6 +101,11 @@ body {
     font-size: 16px;
     cursor: pointer;
     outline: none;
+}
+
+.bi--book-half:hover{
+    background-color: pink;
+    cursor: pointer;
 }
 
 /*
@@ -127,6 +133,25 @@ div.book-details p {
 
 div.book-synopsis p {
     font-size: 22px;
+}
+
+.book-info-author {
+    cursor: pointer;
+    text-decoration: underline;
+    margin-right: 5px;
+}
+
+.book-info-author mark {
+    color: #14518e;
+    background-color: lightgrey;
+}
+
+.highlighted-lists {
+    background-color: #77b0d0;
+}
+
+.non-highlighted-lists {
+    background-color: transparent;
 }
 
 /*
