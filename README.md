@@ -24,3 +24,6 @@ npm run dev
 4. When the project is finished creating, select that project
 5. Click on "+ Create Credentials" and then click on "API Key"
 6. Copy and paste the generated API key as mentioned in step 6 on How to Run the Project
+
+## Other 
+Other information pertaining to the code's structure and the API and libraries used is in this [document](https://docs.google.com/document/d/1ervU2UGccMAh6cDOnvskbUd97rN3S7KTtbWg6xhDhIw/edit?usp=sharing)
