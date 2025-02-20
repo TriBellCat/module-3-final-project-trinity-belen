@@ -31,7 +31,6 @@ function SearchResults({ results, onBookSelect }) {
                             }>
                                 View Details
                             </button>
-                            <button>Add to Reading List</button>
                             {result.saleInfo?.buyLink && (
                                 <a href={result.saleInfo.buyLink} target="_blank" rel="noopener noreferrer">
                                     <button className="buy-button">Buy Book</button>

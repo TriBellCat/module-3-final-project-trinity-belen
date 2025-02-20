@@ -2,10 +2,13 @@ import React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from './Header.jsx'
-import BookInfo from './BookInfo.jsx'
 import HomePage from './HomePage.jsx';
-import SearchResults from './SearchResults.jsx';
-import ReadingList from './ReadingList.jsx';
+import BookInfo from './Main Functionality/BookInfo.jsx'
+import SearchResults from './Main Functionality/SearchResults.jsx';
+import ReadingList from './Main Functionality/ReadingList.jsx';
+import Login from './User Authetication/Login.jsx';
+import Register from './User Authetication/Register.jsx';
+import UserProfile from './User Authetication/UserProfile.jsx';
 
 function App() {
   /* States */
@@ -16,8 +19,8 @@ function App() {
   const [selectedBook, setSelectedBook] = React.useState(() => {
     const savedBook = localStorage.getItem('selectedBook');
     return savedBook ? JSON.parse(savedBook) : null;
-  }); 
-  
+  });
+
   //For the search functionality
   const [searchTerm, setSearchTerm] = React.useState('');
   const [submittedSearchTerm, setSubmittedSearchTerm] = React.useState('');
@@ -28,6 +31,19 @@ function App() {
   const [selectedReadingList, setSelectedReadingList] = React.useState('');
 
   const navigate = useNavigate();
+
+  //For user authentication
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [username, setUsername] = React.useState('');
+
+  //Stores current user
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setIsLoggedIn(true);
+      setUsername(JSON.parse(storedUser).username);
+    }
+  }, []);
 
   //Fetches data from Google Books API and then get results based off of user input
   const fetchUserSubmission = async (e) => {
@@ -50,7 +66,7 @@ function App() {
 
     navigate('/search');
     console.log("Went to search page!");
-  }
+  };
 
   const updateBookSelect = (book) => {
     setSelectedBook(book);
@@ -82,7 +98,18 @@ function App() {
     }
 
     navigate('/search');
-    console.log("Went to search page (for author name)!");  
+    console.log("Went to search page (for author name)!");
+  };
+
+  const setupUserLogin = (loggedInUsername) => {
+    setIsLoggedIn(true);
+    setUsername(loggedInUsername);
+  };
+
+  const setupUserLogout = () => {
+    setIsLoggedIn(false);
+    setUsername('');
+    navigate('/');
   };
 
   return (
@@ -91,26 +118,38 @@ function App() {
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         fetchUserSubmission={fetchUserSubmission}
+        isLoggedIn={isLoggedIn}
       />
-      <ReadingList
-        addBook={memoizedAddBook}
-        setSelectedReadingList={setSelectedReadingList}
-      />
+      {isLoggedIn && (
+        <ReadingList
+          addBook={memoizedAddBook}
+          setSelectedReadingList={setSelectedReadingList}
+        />
+      )}
 
       <Routes>
-        <Route
-          path="/" element={
-            <HomePage
-              onBookSelect={updateBookSelect}
-              selectedReadingList={selectedReadingList}
-              changeList={addBookToList}
-            />
+      <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <HomePage
+                onBookSelect={updateBookSelect}
+                selectedReadingList={selectedReadingList}
+                changeList={addBookToList}
+              />
+            ) : (
+              <div>
+                <h2>Please Login or Register</h2>
+                <button onClick={() => navigate('/login')}>Login</button>
+                <button onClick={() => navigate('/register')}>Register</button>
+              </div>
+            )
           }
         />
         <Route
           path="/book"
           element={
-            <BookInfo 
+            <BookInfo
               book={selectedBook}
               changeList={addBookToList}
               onAuthorClick={setUpAuthor}
@@ -125,6 +164,27 @@ function App() {
               onBookSelect={updateBookSelect}
             />
           }
+        />
+
+        <Route path="/login" 
+          element= {
+              <Login 
+                onLogin={setupUserLogin} 
+              />
+            } 
+        />
+        <Route path="/register" 
+          element={
+            <Register />
+          } 
+        />
+        <Route
+          path="/profile"
+          element={
+            <UserProfile 
+              username={username} 
+              onLogout={setupUserLogout} 
+            />}
         />
       </Routes>
     </div>

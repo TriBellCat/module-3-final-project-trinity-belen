@@ -92,13 +92,6 @@ function ReadingList({ addBook, setSelectedReadingList }) {
         });
     };
 
-    const clearLocalStorageButton = () => {
-        if (confirm("WARNING: This will delete all your data!")) {
-            localStorage.clear();
-            alert("Local storage is now empty!");
-        } 
-    };
-
     React.useEffect(() => {
         if (addBook) {
             addBook((listName, book, action) => updateBookInReadingList(listName, book, action));
@@ -123,7 +116,6 @@ function ReadingList({ addBook, setSelectedReadingList }) {
             </select>
             <button onClick={createReadingList}>+ Create</button>
             <button onClick={deleteReadingList}>- Delete</button>
-            <button onClick={clearLocalStorageButton}>Reset Local Storage</button>
         </div>
     );
 
