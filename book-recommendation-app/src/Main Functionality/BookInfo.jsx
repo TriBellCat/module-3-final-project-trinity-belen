@@ -135,7 +135,7 @@ function BookInfo({ book, changeList, onAuthorClick }) {
                 <option
                   key={index}
                   value={listName}
-                  className={selectedLists.includes(listName) ? 'highlighted-lists' : 'non-highlighted-lists'}          
+                  className={selectedLists.includes(listName) ? 'highlighted-lists' : 'non-highlighted-lists'}
                 >
                   {listName}
                 </option>

@@ -182,7 +182,6 @@ function App() {
           path="/profile"
           element={
             <UserProfile 
-              username={username} 
               onLogout={setupUserLogout} 
             />}
         />

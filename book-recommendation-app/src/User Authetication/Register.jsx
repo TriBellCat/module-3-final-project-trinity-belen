@@ -1,44 +1,55 @@
-// Register.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Register() {
-
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const registerSubmit = async (e) => {
     e.preventDefault();
 
-    //Get users from local storage or initialize an empty array
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-    console.log(storedUsers);
+    try {
+      //POST to /register
+      const response = await axios.post('http://localhost:3001/register', { username, password, email });
 
-    //Check if username exist
-    if (storedUsers.some(user => user.username === username)) {
-      alert('Username already exists. Please choose a different username.');
-      return;
+      console.log('Registration successful:', response.data);
+
+      //Show message from backend if available
+      alert(response.data.message || 'Registration successful. Please log in.');
+      
+      navigate('/login');
     }
+    catch (error) {
+      console.error('Registration failed:', error.response ? error.response.data : error.message);
 
-    const newUser = { username, password }; 
-    storedUsers.push(newUser); //Adds new user to the user array
-    localStorage.setItem('users', JSON.stringify(storedUsers)); 
-
-    alert('Registration successful. Please log in.');
-    navigate('/login');
+      //Show error message from backend if available
+      alert((error.response && error.response.data && error.response.data.message) || 'Registration failed. Please try again.');
+    }
   };
 
   return (
     <div>
       <h2>Register</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={registerSubmit}>
         <div>
           <label>Username:</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div>
@@ -47,6 +58,8 @@ function Register() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength="8"
           />
         </div>
         <button type="submit">Register</button>

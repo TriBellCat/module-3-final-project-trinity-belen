@@ -2,40 +2,46 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Login({ onLogin }) {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const loginSubmit = async (e) => {
     e.preventDefault();
-    
-    const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
 
-    //Find the user with the entered username and password in the user array
-    const user = storedUsers.find(user => user.username === username && user.password === password);
+    try {
+      //POST to /login
+      const response = await axios.post('http://localhost:3001/login', { username, password });
 
-    if (user) {
-      onLogin(username);
+      console.log('Login successful:', response.data);
+      localStorage.setItem('token', response.data.jwt); //Stores JWT token
+      localStorage.setItem('user', JSON.stringify({ userId: response.data.userId, username: response.data.username })); //Stores user info
+      onLogin(response.data.username); //Updates login state in App.jsx
       navigate('/');
-      
-    } 
-    else {
-      alert('Invalid credentials!');
+    }
+
+    catch (error) {
+      console.error('Login failed:', error.response ? error.response.data : error.message);
+
+      //Show error message from backend if possible
+      alert((error.response && error.response.data && error.response.data.message) || 'Login failed. Invalid credentials!');
     }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={loginSubmit}>
         <div>
           <label>Username:</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </div>
         <div>
@@ -44,6 +50,7 @@ function Login({ onLogin }) {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
         <button type="submit">Log In</button>
