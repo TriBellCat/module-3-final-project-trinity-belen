@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance.jsx';
 
 function UserProfile({ onLogout }) {
   const [userProfile, setUserProfile] = React.useState(null);
-  
+
   React.useEffect(() => {
     const fetchUserProfile = async () => {
       const token = localStorage.getItem('token');
@@ -15,20 +15,8 @@ function UserProfile({ onLogout }) {
         return;
       }
 
-      try {
-        const response = await axios.get('http://localhost:3001/user', { headers: { Authorization: `Bearer ${token}` }});
-        setUserProfile(response.data.user);
-      }
-
-      catch (error) {
-        console.error("Error fetching user profile:", error.response ? error.response.data : error.message);
-
-        //A way to handle errors such as token expiration
-        if (error.response && error.response.status === 401) {
-          alert("Your session has expired. Please log in again.");
-          onLogout();
-        }
-      }
+      const response = await axiosInstance.get('/user', { headers: { Authorization: `Bearer ${token}` } });
+      setUserProfile(response.data.user);
     };
 
     fetchUserProfile();
@@ -47,27 +35,23 @@ function UserProfile({ onLogout }) {
     if (confirm("WARNING: This will permanently delete your account! Are you sure?")) {
       const token = localStorage.getItem('token');
 
-      try {
-          const response = await axios.delete('http://localhost:3001/delete-account', { 
-              headers: { Authorization: `Bearer ${token}` }
-          });
+      const response = await axiosInstance.delete('/delete-account', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-          console.log("Account deletion successful:", response.data);
-          localStorage.removeItem('user');
-          localStorage.removeItem('token'); 
-          alert(response.data.message || "Your account has been deleted.");
-          onLogout(); 
-      }
-      catch (error) {
-          console.error("Error deleting account:", error.response ? error.response.data : error.message);
-          alert((error.response && error.response.data && error.response.data.message) || "Failed to delete account. Please try again.");
-      }
+      console.log("Account deletion successful:", response.data);
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      alert(response.data.message || "Your account has been deleted.");
+      onLogout();
     }
   };
 
   return (
-    <div>
-      <h2>User Profile</h2>
+    <div className='mt-6'>
+      <h2 className='text-5xl text-gray-900 dark:text-white'>
+        User Profile
+      </h2>
       {userProfile ? (
         <div>
           <p>Welcome, {userProfile.user_name}!</p>
@@ -77,10 +61,19 @@ function UserProfile({ onLogout }) {
         <p>Loading user profile...</p>
       )
       }
-      <button onClick={onLogout}>Logout</button>
-      <button onClick={deleteAccount}>Delete Account</button>
-      <button onClick={clearLocalStorageButton}>Reset Local Storage</button>
-
+      <button 
+        onClick={onLogout}
+        className='px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80'  
+      >Logout</button>
+      <button 
+        onClick={deleteAccount}
+        className='px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80'    
+      >
+        Delete Account</button>
+      <button 
+        onClick={clearLocalStorageButton}
+        className='px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80'  
+      >Reset Local Storage</button>
     </div>
   );
 }
