@@ -74,7 +74,7 @@ function ReadingList({ setSelectedReadingList }) {
                 <option value="" disabled>Reading Lists</option>
                 {
                     readingLists.map((list) => (
-                        <option key={list.reading_list_id} value={list.reading_list_id}>
+                        <option key={`user_${list.user_id}_list_${list.reading_list_id}`} value={list.reading_list_id}>
                             {list.list_name.slice(0, 10)}
                         </option>
                     )

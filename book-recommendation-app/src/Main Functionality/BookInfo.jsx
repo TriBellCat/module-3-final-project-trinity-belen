@@ -121,7 +121,7 @@ function BookInfo({ book, onAuthorClick }) {
       <div className="w-full max-w-sm px-4 py-3 bg-white rounded-md shadow-md dark:bg-gray-800">
         {/* Book Information */}
         <img
-          src={book.volumeInfo?.imageLinks?.medium || book.volumeInfo?.imageLinks?.thumbnail}
+          src={book.volumeInfo?.imageLinks?.thumbnail}
           alt={book.volumeInfo?.title || 'Book cover'}
           className="w-70 h-70"
         />

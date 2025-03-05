@@ -95,9 +95,14 @@ function App() {
     setUsername(loggedInUsername);
   };
 
+  const clearSelectedReadingList = () => {
+    setSelectedReadingList('');
+  };
+  
   const setupUserLogout = () => {
     setIsLoggedIn(false);
     setUsername('');
+    clearSelectedReadingList(); 
     navigate('/');
   };
 

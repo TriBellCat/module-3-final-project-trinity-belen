@@ -15,20 +15,29 @@ function HomePage({ onBookSelect, selectedReadingList }) {
   React.useEffect(() => {
     const getBooks = async () => {
       if (selectedReadingList) {
-        const response = await axiosInstance.get(`/readinglists/${selectedReadingList.reading_list_id}/books`,
-          {
+        const response = await axiosInstance.get(`/readinglists/${selectedReadingList.reading_list_id}/books`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+  
+        const booksWithUserData = await Promise.all(response.data.map(async (book) => {
+          const userDataResponse = await axiosInstance.get(`/books/${book.book_id}/user-data`, {
             headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-        setBooksInList(response.data);
-      }
-
-      //Clear books if no reading list is selected
+          });
+          return {
+            ...book,
+            progress: userDataResponse.data.progress,
+            review_score: userDataResponse.data.review_score
+          };
+        }));
+  
+        setBooksInList(booksWithUserData);
+      } 
+      
       else {
         setBooksInList([]);
       }
     };
-
+  
     getBooks();
   }, [selectedReadingList, token]);
 
@@ -63,7 +72,7 @@ function HomePage({ onBookSelect, selectedReadingList }) {
                 <h1 className="px-2 text-sm">{book.progress || 'Not Started'}</h1>
               </div>
               <div className="flex items-center mt-4 text-gray-700 dark:text-gray-200">
-                <h1 className="px-2 text-sm">{book.review_score || 0}</h1>
+                <h1 className="px-2 text-sm">{book.review_score || 0} ★</h1>
               </div>
               <div className="flex items-center mt-4 text-blue-700 dark:text-gray-200">
                 <a
