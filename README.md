@@ -3,11 +3,6 @@
 ## How to Run the Project
 1. Open the command prompt/terminal
 2. Clone project 
-module 3
-```
-git clone https://github.com/TriBellCat/module-3-final-project-trinity-belen.git
-```
-module 4
 ```
 git clone --branch module-4 https://github.com/TriBellCat/module-3-final-project-trinity-belen.git
 ```
